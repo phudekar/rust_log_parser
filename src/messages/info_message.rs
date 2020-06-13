@@ -2,8 +2,6 @@ use super::log_message::LogMessage;
 use super::log_message::LogMessageParser;
 use super::log_message::MessageType;
 
-use std::iter::FromIterator;
-
 #[derive(Debug)]
 pub struct InfoMessage {
     pub timestamp: u32,

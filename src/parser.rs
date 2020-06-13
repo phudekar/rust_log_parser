@@ -1,6 +1,8 @@
 extern crate either;
 use crate::messages::error_message::ErrorMessage;
 use crate::messages::info_message::InfoMessage;
+use crate::messages::info_message::WarningMessage;
+
 use crate::messages::log_message::LogMessageParser;
 use crate::messages::log_message::*;
 
@@ -10,6 +12,7 @@ pub fn parse_line(input: &str) -> Option<LogMessage> {
             let message: &str = &input[2..];
             match messag_type {
                 MessageType::Info => InfoMessage::parse(message),
+                MessageType::Warning => WarningMessage::parse(message),
                 _ => ErrorMessage::parse(message),
             }
         })
@@ -43,7 +46,7 @@ fn should_parse_waring_message_type() {
 fn should_parse_error_message_type() {
     let message_type = get_message_type("E 12 23 checking things");
     assert!(message_type.is_some(), "Expected message to have a value");
-    assert_eq!(message_type.unwrap(), MessageType::Error { error_code: 12 })
+    assert_eq!(message_type.unwrap(), MessageType::Error { error_code: 0 })
 }
 
 #[test]

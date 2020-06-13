@@ -5,23 +5,35 @@ use super::log_message::MessageType;
 #[derive(Debug)]
 pub struct InfoMessage;
 
+pub struct WarningMessage;
+
 impl LogMessageParser for InfoMessage {
     fn parse(input: &str) -> Option<LogMessage> {
-        let mut iter = input.split_whitespace();
-        let timestamp_result = iter.next().unwrap_or_default().parse();
+        parse_log_message(input, MessageType::Info)
+    }
+}
 
-        if input.split_whitespace().count() < 2 || timestamp_result.is_err() {
-            return Option::None;
-        } else {
-            let words: Vec<&str> = iter.collect();
-            let message: String = words.join(" ");
-            let timestamp = timestamp_result.unwrap_or_default();
-            return Option::Some(LogMessage {
-                message_type: MessageType::Info,
-                timestamp,
-                message,
-            });
-        }
+impl LogMessageParser for WarningMessage {
+    fn parse(input: &str) -> Option<LogMessage> {
+        parse_log_message(input, MessageType::Warning)
+    }
+}
+
+fn parse_log_message(input: &str, message_type: MessageType) -> Option<LogMessage> {
+    let mut iter = input.split_whitespace();
+    let timestamp_result = iter.next().unwrap_or_default().parse();
+
+    if input.split_whitespace().count() < 2 || timestamp_result.is_err() {
+        return Option::None;
+    } else {
+        let words: Vec<&str> = iter.collect();
+        let message: String = words.join(" ");
+        let timestamp = timestamp_result.unwrap_or_default();
+        return Option::Some(LogMessage {
+            message_type,
+            timestamp,
+            message,
+        });
     }
 }
 
@@ -30,9 +42,9 @@ fn should_parse_info_message() {
     let message_ops = InfoMessage::parse("23 checking things");
     assert!(message_ops.is_some(), "Expected message to have a value");
     let log = message_ops.unwrap();
-    assert_eq!(log.message_type(), MessageType::Info);
-    assert_eq!(log.message(), "checking things");
-    assert_eq!(log.timestamp(), 32);
+    assert_eq!(log.message_type, MessageType::Info);
+    assert_eq!(log.message, "checking things");
+    assert_eq!(log.timestamp, 23);
 }
 
 #[test]

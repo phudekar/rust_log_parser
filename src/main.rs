@@ -1,17 +1,31 @@
 mod messages;
 mod parser;
 
-use messages::log_message::LogMessage;
+use messages::log_message::UnknownMessage;
+use std::env;
 
 fn main() {
-    let lines = [
-        "I 147 mice in the air, I’m afraid, but you might catch a bat",
-        "E 2 148 #56k istereadeat lo d200ff] BOOTMEM",
-    ];
+    let args: Vec<String> = env::args().collect();
+    match args.get(1) {
+        Some(input_file) => match std::fs::read_to_string(input_file) {
+            Ok(contents) => {
+                let lines: Vec<&str> = contents.split_terminator("\n").collect();
+                let _: Vec<()> = lines.into_iter().map(proces_line).collect();
+            }
+            Err(error) => println!("{} {}", error, args.get(1).unwrap()),
+        },
+        _ => println!("Please provide log file as input argument"),
+    }
+}
 
-    let info_message: Option<LogMessage> = parser::parse_line(lines.get(0).unwrap());
-    println!("{:#?}", info_message.unwrap());
-
-    let error_message: Option<LogMessage> = parser::parse_line(lines.get(1).unwrap());
-    println!("{:#?}", error_message.unwrap());
+fn proces_line(line: &str) {
+    match parser::parse_line(line) {
+        Some(log_message) => println!("{}", log_message),
+        _ => println!(
+            "{}",
+            UnknownMessage {
+                message: String::from(line)
+            }
+        ),
+    }
 }

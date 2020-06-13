@@ -37,7 +37,7 @@ fn should_parse_error_message() {
     let log = message_ops.unwrap();
 
     assert_eq!(log.message, "file closed");
-    assert_eq!(log.message_type.error_code, 1);
+    assert_eq!(log.message_type, MessageType::Error { error_code: 1 });
     assert_eq!(log.timestamp, 23);
 }
 

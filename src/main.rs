@@ -10,7 +10,7 @@ fn main() {
         Some(input_file) => match std::fs::read_to_string(input_file) {
             Ok(contents) => {
                 let lines: Vec<&str> = contents.split_terminator("\n").collect();
-                let _: Vec<()> = lines.into_iter().map(proces_line).collect();
+                let _: Vec<()> = lines.into_iter().map(parse_line).collect();
             }
             Err(error) => println!("{} {}", error, args.get(1).unwrap()),
         },
@@ -18,8 +18,8 @@ fn main() {
     }
 }
 
-fn proces_line(line: &str) {
-    match parser::parse_line(line) {
+fn parse_line(line: &str) {
+    match parser::parse_message(line) {
         Some(log_message) => println!("{}", log_message),
         _ => println!(
             "{}",

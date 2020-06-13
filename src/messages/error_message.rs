@@ -15,7 +15,7 @@ impl LogMessageParser for ErrorMessage {
             || timestamp_result.is_err()
             || error_code_result.is_err()
         {
-            return Option::None;
+            return None;
         } else {
             let words: Vec<&str> = iter.collect();
             let message: String = words.join(" ");

@@ -9,22 +9,22 @@ pub struct WarningMessage;
 
 impl LogMessageParser for InfoMessage {
     fn parse(input: &str) -> Option<LogMessage> {
-        parse_log_message(input, MessageType::Info)
+        parse_with_timestamp(input, MessageType::Info)
     }
 }
 
 impl LogMessageParser for WarningMessage {
     fn parse(input: &str) -> Option<LogMessage> {
-        parse_log_message(input, MessageType::Warning)
+        parse_with_timestamp(input, MessageType::Warning)
     }
 }
 
-fn parse_log_message(input: &str, message_type: MessageType) -> Option<LogMessage> {
+fn parse_with_timestamp(input: &str, message_type: MessageType) -> Option<LogMessage> {
     let mut iter = input.split_whitespace();
     let timestamp_result = iter.next().unwrap_or_default().parse();
 
     if input.split_whitespace().count() < 2 || timestamp_result.is_err() {
-        return Option::None;
+        return None;
     } else {
         let words: Vec<&str> = iter.collect();
         let message: String = words.join(" ");

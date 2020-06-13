@@ -1,18 +1,16 @@
-use std::fmt;
-
 #[derive(Debug)]
 pub struct UnknownMessage {
     pub message: String,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum MessageType {
     Info,
     Warning,
     Error { error_code: u32 },
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct LogMessage {
     pub message_type: MessageType,
     pub timestamp: u32,

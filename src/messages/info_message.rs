@@ -3,27 +3,10 @@ use super::log_message::LogMessageParser;
 use super::log_message::MessageType;
 
 #[derive(Debug)]
-pub struct InfoMessage {
-    pub timestamp: u32,
-    pub message: String,
-}
+pub struct InfoMessage;
 
-impl LogMessage for InfoMessage {
-    fn message_type(&self) -> MessageType {
-        MessageType::I
-    }
-
-    fn timestamp(&self) -> u32 {
-        self.timestamp
-    }
-
-    fn message(&self) -> String {
-        self.message.clone()
-    }
-}
-
-impl LogMessageParser<InfoMessage> for InfoMessage {
-    fn parse(input: &str) -> Option<InfoMessage> {
+impl LogMessageParser for InfoMessage {
+    fn parse(input: &str) -> Option<LogMessage> {
         let mut iter = input.split_whitespace();
         let timestamp_result = iter.next().unwrap_or_default().parse();
 
@@ -33,7 +16,11 @@ impl LogMessageParser<InfoMessage> for InfoMessage {
             let words: Vec<&str> = iter.collect();
             let message: String = words.join(" ");
             let timestamp = timestamp_result.unwrap_or_default();
-            return Option::Some(InfoMessage { timestamp, message });
+            return Option::Some(LogMessage {
+                message_type: MessageType::Info,
+                timestamp,
+                message,
+            });
         }
     }
 }
@@ -42,8 +29,10 @@ impl LogMessageParser<InfoMessage> for InfoMessage {
 fn should_parse_info_message() {
     let message_ops = InfoMessage::parse("23 checking things");
     assert!(message_ops.is_some(), "Expected message to have a value");
-    let message = message_ops.unwrap();
-    assert_eq!(message.message_type(), MessageType::I)
+    let log = message_ops.unwrap();
+    assert_eq!(log.message_type(), MessageType::Info);
+    assert_eq!(log.message(), "checking things");
+    assert_eq!(log.timestamp(), 32);
 }
 
 #[test]

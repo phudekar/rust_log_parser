@@ -5,17 +5,18 @@ pub struct UnknownMessage {
 
 #[derive(Debug, PartialEq)]
 pub enum MessageType {
-    I,
-    W,
-    E,
+    Info,
+    Warning,
+    Error { error_code: u32 },
 }
 
-pub trait LogMessage {
-    fn message_type(&self) -> MessageType;
-    fn timestamp(&self) -> u32;
-    fn message(&self) -> String;
+#[derive(Debug, PartialEq)]
+pub struct LogMessage {
+    pub message_type: MessageType,
+    pub timestamp: u32,
+    pub message: String,
 }
 
-pub trait LogMessageParser<T> {
-    fn parse(input: &str) -> Option<T>;
+pub trait LogMessageParser {
+    fn parse(input: &str) -> Option<LogMessage>;
 }

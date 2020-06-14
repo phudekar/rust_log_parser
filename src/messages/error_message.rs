@@ -46,3 +46,9 @@ fn should_not_parse_error_message_if_does_not_have_timestamp() {
     let message = ErrorMessage::parse("checking things");
     assert!(message.is_none(), "Expected message to be empty");
 }
+
+#[test]
+fn should_not_parse_error_message_if_does_not_have_errorcode() {
+    let message = ErrorMessage::parse("23 checking things");
+    assert!(message.is_none(), "Expected message to be empty");
+}

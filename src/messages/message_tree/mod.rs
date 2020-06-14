@@ -35,7 +35,7 @@ impl TreeNode {
     fn update_left(&self, tree: MessageTree) -> Self {
         match self {
             TreeNode::Leaf => TreeNode::with_left(tree),
-            TreeNode::Node { left, right } => TreeNode::Node {
+            TreeNode::Node { left: _, right } => TreeNode::Node {
                 left: Some(Box::new(tree)),
                 right: right.clone(),
             },
@@ -45,7 +45,7 @@ impl TreeNode {
     fn update_right(&self, tree: MessageTree) -> Self {
         match self {
             TreeNode::Leaf => TreeNode::with_right(tree),
-            TreeNode::Node { left, right } => TreeNode::Node {
+            TreeNode::Node { left, right: _ } => TreeNode::Node {
                 right: Some(Box::new(tree)),
                 left: left.clone(),
             },
@@ -100,7 +100,7 @@ impl MessageTree {
         return MessageTree {
             node_type: match self.node_type.clone() {
                 TreeNode::Leaf => TreeNode::with_left(MessageTree::from(message)),
-                TreeNode::Node { left, right } => match left {
+                TreeNode::Node { left, right: _ } => match left {
                     Some(tree) => self.node_type.update_left(tree.insert(message)),
                     _ => self.node_type.update_left(MessageTree::from(message)),
                 },
@@ -113,7 +113,7 @@ impl MessageTree {
         return MessageTree {
             node_type: match self.node_type.clone() {
                 TreeNode::Leaf => TreeNode::with_right(MessageTree::from(message)),
-                TreeNode::Node { left, right } => match right {
+                TreeNode::Node { left: _, right } => match right {
                     Some(tree) => self.node_type.update_right(tree.insert(message)),
                     _ => self.node_type.update_right(MessageTree::from(message)),
                 },

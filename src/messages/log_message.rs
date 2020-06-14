@@ -7,7 +7,7 @@ pub struct UnknownMessage {
 pub enum MessageType {
     Info,
     Warning,
-    Error { error_code: u32 },
+    Error { error_code: i32 },
 }
 
 #[derive(Debug, PartialEq, Clone)]

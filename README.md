@@ -1,4 +1,4 @@
-Log File Parsr
+Log File Parser
 ---
 
 This is log file parser return in Rust.

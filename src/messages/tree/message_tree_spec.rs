@@ -150,3 +150,21 @@ fn should_build_message_tree() {
         panic!("Failed to build Message Tree")
     }
 }
+
+#[test]
+fn should_return_ordered_message_tree() {
+    let unorderd_messages = vec![
+        TestData::message_at(3),
+        TestData::message_at(4),
+        TestData::message_at(1),
+        TestData::message_at(0),
+        TestData::message_at(2),
+    ];
+    let tree = MessageTree::build(unorderd_messages).unwrap();
+    let ordered_messages = MessageTree::in_order(&tree);
+    assert_eq!(ordered_messages.get(0).unwrap().timestamp, 1);
+    assert_eq!(ordered_messages.get(1).unwrap().timestamp, 2);
+    assert_eq!(ordered_messages.get(2).unwrap().timestamp, 3);
+    assert_eq!(ordered_messages.get(3).unwrap().timestamp, 4);
+    assert_eq!(ordered_messages.get(4).unwrap().timestamp, 5);
+}

@@ -87,7 +87,7 @@ impl MessageTree {
         }
     }
 
-    pub fn build(messages: Vec<LogMessage>) -> Result<MessageTree, String> {
+    pub fn build(messages: Vec<LogMessage>) -> Result<Self, String> {
         if let Some((head, tail)) = messages.split_first() {
             let mut root = Self::from(head.clone());
             for message in tail {
@@ -99,7 +99,7 @@ impl MessageTree {
         }
     }
 
-    pub fn insert(&self, message: LogMessage) -> MessageTree {
+    pub fn insert(&self, message: LogMessage) -> Self {
         if message.timestamp <= self.message.timestamp {
             self.insert_left(message)
         } else {
@@ -107,7 +107,7 @@ impl MessageTree {
         }
     }
 
-    pub fn insert_left(&self, message: LogMessage) -> MessageTree {
+    pub fn insert_left(&self, message: LogMessage) -> Self {
         return MessageTree {
             node_type: match self.node_type.clone() {
                 TreeNode::Leaf => TreeNode::with_left(MessageTree::from(message)),
@@ -120,7 +120,7 @@ impl MessageTree {
         };
     }
 
-    pub fn insert_right(&self, message: LogMessage) -> MessageTree {
+    pub fn insert_right(&self, message: LogMessage) -> Self {
         return MessageTree {
             node_type: match self.node_type.clone() {
                 TreeNode::Leaf => TreeNode::with_right(MessageTree::from(message)),
@@ -131,5 +131,22 @@ impl MessageTree {
             },
             message: self.message.clone(),
         };
+    }
+
+    pub fn in_order(tree: &Self) -> Vec<&LogMessage> {
+        match &tree.node_type {
+            TreeNode::Leaf => vec![&tree.message],
+            TreeNode::Node { left, right } => {
+                let mut ordered: Vec<&LogMessage> = vec![];
+                if let Some(left_nodes) = left {
+                    ordered.append(MessageTree::in_order(&left_nodes).as_mut());
+                }
+                ordered.push(&tree.message);
+                if let Some(right_nodes) = right {
+                    ordered.append(MessageTree::in_order(&right_nodes).as_mut());
+                }
+                ordered
+            }
+        }
     }
 }

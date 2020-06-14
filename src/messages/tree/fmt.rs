@@ -1,7 +1,6 @@
 use std::fmt;
 
-use super::message_tree::MessageTree;
-use super::message_tree::TreeNode;
+use super::message_tree::{MessageTree, TreeNode};
 
 impl std::fmt::Display for MessageTree {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

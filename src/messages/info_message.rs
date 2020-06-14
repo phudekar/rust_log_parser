@@ -1,6 +1,4 @@
-use super::log_message::LogMessage;
-use super::log_message::LogMessageParser;
-use super::log_message::MessageType;
+use super::log_message::{LogMessage, LogMessageParser, MessageType};
 
 #[derive(Debug)]
 pub struct InfoMessage;

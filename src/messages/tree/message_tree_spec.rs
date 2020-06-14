@@ -1,7 +1,5 @@
-use super::super::log_message::LogMessage;
-use super::super::log_message::MessageType;
-use super::message_tree::MessageTree;
-use super::message_tree::TreeNode;
+use super::super::log_message::{LogMessage, MessageType};
+use super::message_tree::{MessageTree, TreeNode};
 
 #[test]
 fn should_create_message_tree() {

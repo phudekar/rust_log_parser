@@ -1,10 +1,8 @@
 extern crate either;
 use crate::messages::error_message::ErrorMessage;
-use crate::messages::info_message::InfoMessage;
-use crate::messages::info_message::WarningMessage;
+use crate::messages::info_message::{InfoMessage, WarningMessage};
 
-use crate::messages::log_message::LogMessageParser;
-use crate::messages::log_message::*;
+use crate::messages::log_message::{LogMessage, LogMessageParser, MessageType};
 
 pub fn parse_message(input: &str) -> Option<LogMessage> {
     return get_message_type(input)

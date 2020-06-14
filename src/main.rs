@@ -3,14 +3,20 @@ mod parser;
 
 use messages::log_message::UnknownMessage;
 use std::env;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     match args.get(1) {
-        Some(input_file) => match std::fs::read_to_string(input_file) {
-            Ok(contents) => {
-                let lines: Vec<&str> = contents.split_terminator("\n").collect();
-                let _: Vec<()> = lines.into_iter().map(parse_line).collect();
+        Some(input_file) => match File::open(input_file) {
+            Ok(file) => {
+                let lines = BufReader::new(file).lines();
+                for line in lines {
+                    if let Ok(ip) = line {
+                        parse_line(ip);
+                    }
+                }
             }
             Err(error) => println!("{} {}", error, args.get(1).unwrap()),
         },
@@ -18,8 +24,8 @@ fn main() {
     }
 }
 
-fn parse_line(line: &str) {
-    match parser::parse_message(line) {
+fn parse_line(line: String) {
+    match parser::parse_message(line.as_str()) {
         Some(log_message) => println!("{}", log_message),
         _ => println!(
             "{}",

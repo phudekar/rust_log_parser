@@ -1,8 +1,6 @@
 use std::fmt;
 
-use super::log_message::LogMessage;
-use super::log_message::MessageType;
-use super::log_message::UnknownMessage;
+use super::log_message::{LogMessage, MessageType, UnknownMessage};
 
 impl std::fmt::Display for UnknownMessage {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

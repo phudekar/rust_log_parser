@@ -5,7 +5,7 @@ pub struct ErrorMessage;
 
 impl LogMessageParser for ErrorMessage {
     fn parse(input: &str) -> Option<LogMessage> {
-        let mut iter = input.split_whitespace();
+        let mut iter = input.splitn(3, " ");
         let error_code_result = iter.next().unwrap_or_default().parse();
         let timestamp_result = iter.next().unwrap_or_default().parse();
 
@@ -15,8 +15,7 @@ impl LogMessageParser for ErrorMessage {
         {
             return None;
         } else {
-            let words: Vec<&str> = iter.collect();
-            let message: String = words.join(" ");
+            let message: String = String::from(iter.next().unwrap_or_default());
             let timestamp = timestamp_result.unwrap_or_default();
             let error_code = error_code_result.unwrap_or_default();
             return Option::Some(LogMessage {

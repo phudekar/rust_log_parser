@@ -87,6 +87,18 @@ impl MessageTree {
         }
     }
 
+    pub fn build(messages: Vec<LogMessage>) -> Result<MessageTree, String> {
+        if let Some((head, tail)) = messages.split_first() {
+            let mut root = Self::from(head.clone());
+            for message in tail {
+                root = root.insert(message.clone());
+            }
+            Ok(root)
+        } else {
+            Err(String::from("Cannot construct tree from empty messages"))
+        }
+    }
+
     pub fn insert(&self, message: LogMessage) -> MessageTree {
         if message.timestamp <= self.message.timestamp {
             self.insert_left(message)

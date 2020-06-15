@@ -1,77 +1,11 @@
-#[derive(Debug, PartialEq, Clone)]
-pub enum TreeNode<T>
-where
-    T: Clone + PartialOrd,
-{
-    Leaf,
-    Node {
-        left: Option<Box<MessageTree<T>>>,
-        right: Option<Box<MessageTree<T>>>,
-    },
-}
-
-impl<T> TreeNode<T>
-where
-    T: Clone + PartialOrd,
-{
-    #[allow(dead_code)]
-    pub fn new(left: MessageTree<T>, right: MessageTree<T>) -> Self {
-        TreeNode::Node {
-            left: Some(Box::new(left)),
-            right: Some(Box::new(right)),
-        }
-    }
-
-    fn with_left(tree: MessageTree<T>) -> Self {
-        TreeNode::Node {
-            left: Some(Box::new(tree)),
-            right: None,
-        }
-    }
-
-    fn with_right(tree: MessageTree<T>) -> Self {
-        TreeNode::Node {
-            right: Some(Box::new(tree)),
-            left: None,
-        }
-    }
-
-    fn update_left(&self, tree: MessageTree<T>) -> Self {
-        match self {
-            TreeNode::Leaf => TreeNode::with_left(tree),
-            TreeNode::Node { left: _, right } => TreeNode::Node {
-                left: Some(Box::new(tree)),
-                right: right.clone(),
-            },
-        }
-    }
-
-    fn update_right(&self, tree: MessageTree<T>) -> Self {
-        match self {
-            TreeNode::Leaf => TreeNode::with_right(tree),
-            TreeNode::Node { left, right: _ } => TreeNode::Node {
-                right: Some(Box::new(tree)),
-                left: left.clone(),
-            },
-        }
-    }
-}
-
-impl<T> std::convert::AsRef<TreeNode<T>> for TreeNode<T>
-where
-    T: Clone + PartialOrd,
-{
-    fn as_ref(&self) -> &TreeNode<T> {
-        &self
-    }
-}
+use super::tree_node::TreeNode;
 
 #[derive(Debug, PartialEq)]
 pub struct MessageTree<T>
 where
     T: Clone + PartialOrd,
 {
-    pub node_type: TreeNode<T>,
+    pub node_type: TreeNode<MessageTree<T>>,
     pub message: T,
 }
 
@@ -124,7 +58,7 @@ where
         }
     }
 
-    pub fn insert_left(&self, message: &T) -> Self {
+    fn insert_left(&self, message: &T) -> Self {
         return MessageTree {
             node_type: match self.node_type.clone() {
                 TreeNode::Leaf => TreeNode::with_left(MessageTree::from(message)),
@@ -137,7 +71,7 @@ where
         };
     }
 
-    pub fn insert_right(&self, message: &T) -> Self {
+    fn insert_right(&self, message: &T) -> Self {
         return MessageTree {
             node_type: match self.node_type.clone() {
                 TreeNode::Leaf => TreeNode::with_right(MessageTree::from(message)),

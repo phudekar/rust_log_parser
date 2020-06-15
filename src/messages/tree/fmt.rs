@@ -1,6 +1,7 @@
 use std::fmt::{self, Display};
 
-use super::message_tree::{MessageTree, TreeNode};
+use super::message_tree::MessageTree;
+use super::tree_node::TreeNode;
 
 impl<T> Display for MessageTree<T>
 where

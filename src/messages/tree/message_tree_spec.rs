@@ -1,6 +1,7 @@
 use super::super::log_message::{LogMessage, MessageType};
 #[allow(unused_imports)]
-use super::message_tree::{MessageTree, TreeNode};
+use super::message_tree::MessageTree;
+use super::tree_node::TreeNode;
 
 #[allow(dead_code)]
 struct TestData;

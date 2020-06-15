@@ -1,5 +1,6 @@
 Log File Parser
 ---
+!["build-status"](https://travis-ci.org/phudekar/rust_log_parser.svg?branch=master&status=unknown)
 
 This is a log file parser return in Rust which tries to parse lines in a file as log messages. Once the parsing is done it then sorts the messages according to timestamp and prints out all the errors with given severity.
 

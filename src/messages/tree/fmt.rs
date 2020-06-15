@@ -1,8 +1,11 @@
-use std::fmt;
+use std::fmt::{self, Display};
 
 use super::message_tree::{MessageTree, TreeNode};
 
-impl std::fmt::Display for MessageTree {
+impl<T> Display for MessageTree<T>
+where
+    T: Display + PartialOrd + Clone,
+{
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match &self.node_type {
             TreeNode::Leaf => writeln!(f, "{}", self.message.clone()),

@@ -53,15 +53,15 @@ fn main() {
 //     }
 // }
 
-fn what_went_wrong(messages: &Vec<LogMessage>, sevierity: i32) -> Result<Vec<String>, String> {
-    let errors: Vec<String> = MessageTree::build(messages)?
+fn what_went_wrong(messages: &Vec<LogMessage>, sevierity: i32) -> Result<Vec<LogMessage>, String> {
+    let errors: Vec<LogMessage> = MessageTree::build(messages)?
         .in_order()
         .into_iter()
         .filter(|message| match message.message_type {
             MessageType::Error { error_code } => error_code >= sevierity,
             _ => false,
         })
-        .map(|error| error.message.clone())
+        .map(|error| error.clone())
         .collect();
     Ok(errors)
 }

@@ -1,38 +1,42 @@
-use super::super::log_message::LogMessage;
-
 #[derive(Debug, PartialEq, Clone)]
-pub enum TreeNode {
+pub enum TreeNode<T>
+where
+    T: Clone + PartialOrd,
+{
     Leaf,
     Node {
-        left: Option<Box<MessageTree>>,
-        right: Option<Box<MessageTree>>,
+        left: Option<Box<MessageTree<T>>>,
+        right: Option<Box<MessageTree<T>>>,
     },
 }
 
-impl TreeNode {
+impl<T> TreeNode<T>
+where
+    T: Clone + PartialOrd,
+{
     #[allow(dead_code)]
-    pub fn new(left: MessageTree, right: MessageTree) -> Self {
+    pub fn new(left: MessageTree<T>, right: MessageTree<T>) -> Self {
         TreeNode::Node {
             left: Some(Box::new(left)),
             right: Some(Box::new(right)),
         }
     }
 
-    fn with_left(tree: MessageTree) -> Self {
+    fn with_left(tree: MessageTree<T>) -> Self {
         TreeNode::Node {
             left: Some(Box::new(tree)),
             right: None,
         }
     }
 
-    fn with_right(tree: MessageTree) -> Self {
+    fn with_right(tree: MessageTree<T>) -> Self {
         TreeNode::Node {
             right: Some(Box::new(tree)),
             left: None,
         }
     }
 
-    fn update_left(&self, tree: MessageTree) -> Self {
+    fn update_left(&self, tree: MessageTree<T>) -> Self {
         match self {
             TreeNode::Leaf => TreeNode::with_left(tree),
             TreeNode::Node { left: _, right } => TreeNode::Node {
@@ -42,7 +46,7 @@ impl TreeNode {
         }
     }
 
-    fn update_right(&self, tree: MessageTree) -> Self {
+    fn update_right(&self, tree: MessageTree<T>) -> Self {
         match self {
             TreeNode::Leaf => TreeNode::with_right(tree),
             TreeNode::Node { left, right: _ } => TreeNode::Node {
@@ -53,19 +57,28 @@ impl TreeNode {
     }
 }
 
-impl std::convert::AsRef<TreeNode> for TreeNode {
-    fn as_ref(&self) -> &TreeNode {
+impl<T> std::convert::AsRef<TreeNode<T>> for TreeNode<T>
+where
+    T: Clone + PartialOrd,
+{
+    fn as_ref(&self) -> &TreeNode<T> {
         &self
     }
 }
 
 #[derive(Debug, PartialEq)]
-pub struct MessageTree {
-    pub node_type: TreeNode,
-    pub message: LogMessage,
+pub struct MessageTree<T>
+where
+    T: Clone + PartialOrd,
+{
+    pub node_type: TreeNode<T>,
+    pub message: T,
 }
 
-impl std::clone::Clone for MessageTree {
+impl<T> std::clone::Clone for MessageTree<T>
+where
+    T: Clone + PartialOrd,
+{
     fn clone(&self) -> Self {
         MessageTree {
             message: self.message.clone(),
@@ -80,15 +93,18 @@ impl std::clone::Clone for MessageTree {
     }
 }
 
-impl MessageTree {
-    pub fn from(message: &LogMessage) -> MessageTree {
+impl<T> MessageTree<T>
+where
+    T: Clone + PartialOrd,
+{
+    pub fn from(message: &T) -> MessageTree<T> {
         MessageTree {
             node_type: TreeNode::Leaf,
             message: message.clone(),
         }
     }
 
-    pub fn build(messages: &Vec<LogMessage>) -> Result<Self, String> {
+    pub fn build(messages: &Vec<T>) -> Result<Self, String> {
         if let Some((head, tail)) = messages.split_first() {
             let mut root = Self::from(head);
             for message in tail {
@@ -100,15 +116,15 @@ impl MessageTree {
         }
     }
 
-    pub fn insert(&self, message: &LogMessage) -> Self {
-        if message.timestamp <= self.message.timestamp {
+    pub fn insert(&self, message: &T) -> Self {
+        if message <= &self.message {
             self.insert_left(&message)
         } else {
             self.insert_right(&message)
         }
     }
 
-    pub fn insert_left(&self, message: &LogMessage) -> Self {
+    pub fn insert_left(&self, message: &T) -> Self {
         return MessageTree {
             node_type: match self.node_type.clone() {
                 TreeNode::Leaf => TreeNode::with_left(MessageTree::from(message)),
@@ -121,7 +137,7 @@ impl MessageTree {
         };
     }
 
-    pub fn insert_right(&self, message: &LogMessage) -> Self {
+    pub fn insert_right(&self, message: &T) -> Self {
         return MessageTree {
             node_type: match self.node_type.clone() {
                 TreeNode::Leaf => TreeNode::with_right(MessageTree::from(message)),
@@ -134,11 +150,11 @@ impl MessageTree {
         };
     }
 
-    pub fn in_order(&self) -> Vec<&LogMessage> {
+    pub fn in_order(&self) -> Vec<&T> {
         match &self.node_type {
             TreeNode::Leaf => vec![&self.message],
             TreeNode::Node { left, right } => {
-                let mut ordered: Vec<&LogMessage> = vec![];
+                let mut ordered: Vec<&T> = vec![];
                 if let Some(left_nodes) = left {
                     ordered.append(MessageTree::in_order(&left_nodes).as_mut());
                 }

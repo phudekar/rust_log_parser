@@ -21,7 +21,7 @@ impl std::fmt::Display for LogMessage {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "LogMessage {} {} {}",
+            "{} {} {}",
             self.message_type, self.timestamp, self.message
         )
     }
